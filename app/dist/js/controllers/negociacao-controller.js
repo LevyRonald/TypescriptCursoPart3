@@ -6,6 +6,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 import { domInjector } from '../decorators/dom-injector.js';
 import { inspect } from '../decorators/inspect.js';
+import { imprimir } from '../utils/imprimir.js';
 import { logarTempoDeExecucao } from '../decorators/logar.tempo-de-execucao.js';
 import { DiasDaSemana } from '../enums/dias-da-semana.js';
 import { Negociacao } from '../models/negociacao.js';
@@ -29,12 +30,21 @@ export class NegociacaoController {
             return;
         }
         this.negociacoes.adiciona(negociacao);
+        imprimir(negociacao, this.negociacoes);
         this.limparFormulario();
         this.atualizaView();
     }
     importaDados() {
         this.negociacoesService
             .obterNegociacoesDoDia()
+            .then(negociacoesDeHoje => {
+            return negociacoesDeHoje.filter(negociacaoDeHoje => {
+                return !this.negociacoes
+                    .lista()
+                    .some(negociacao => negociacao
+                    .ehIgual(negociacaoDeHoje));
+            });
+        })
             .then(negociacoesDeHoje => {
             for (let negociacao of negociacoesDeHoje) {
                 this.negociacoes.adiciona(negociacao);
@@ -70,3 +80,4 @@ __decorate([
     inspect,
     logarTempoDeExecucao(true)
 ], NegociacaoController.prototype, "adiciona", null);
+//# sourceMappingURL=negociacao-controller.js.map
